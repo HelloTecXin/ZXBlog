@@ -1,0 +1,51 @@
+{% load staticfiles %}
+<div class="container">
+    <nav class="navbar navbar-default" role="navigation">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="https://yz.chsi.com.cn/apply/cjcx/">
+                <img src="{% static '/img/logos.png' %}" width="80px">
+            </a>
+        </div>
+        <div>
+            <ul class="nav navbar-nav" role="navigation">
+                <li><a href="{% url 'home' %}">Home</a> </li>
+                <li><a href="{% url 'blog:blog_title' %}">BLOG</a></li>
+                <li><a href="{% url 'article:article_titles' %}">文章</a> </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right" style="margin-right: 10px;">
+                {% if user.is_authenticated %}
+                <!--视图函数并没有直接返回user对象，返回request，从request中获取user-->
+                <li>
+                    <div class="dropdown" style="margin-top:8px">
+                        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu"
+                                data-toggle="dropdown">
+                            {{ user.username }}
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="{% url 'account:password_change' %}">修改密码</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'account:my_information' %}">个人信息</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'article:article_column' %}">后台管理</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <!--<li><a href="#">{{ user.username }}</a> </li>-->
+                <li><a href="{% url 'account:user_logout' %}">Logout</a></li>
+                {% else %}
+                <li><a href="{% url 'account:user_login' %}">LOGIN</a></li>
+                <li><a href="{% url 'account:user_register' %}">Sign up</a> </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+</div>
+<!--<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.js"></script>-->
+<script type="text/javascript" src="{% static 'js/jquery-1.11.1.min.js' %}"></script>
+<!--<script src="https://cdn.bootcss.com/bootstarp/3.3.7/js/bootstrap.min.js"></script>-->
+<script src="{% static 'js/bootstrap.js' %}"></script>

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}
+Login
+{% endblock %}
+
+{% block content %}
+<div class="row text-center vertical-middle-sm">
+    <h1>Login</h1>
+    <p>Input your username and password</p>
+    <form class="form-horizontal" action="." method="post">
+         <!--action="." 用于显示当前表单提交地址，这里表示的是当前地址，即调用此模板的视图函数所对应的URL-->
+        {% csrf_token %}
+         <!--跨站请求伪造：Django中间件 会阻止前端通过POST方式提交数据， 使用此 处  就会一同提交表单数据-->
+        <!--{{ form.as_p }}-->
+         <!--当请求为get是，视图函数中产生的就是未绑定的对象，这个对象来渲染前端模板，得到一个等待输入的表单-->
+        <div class="form-group">
+            <label for="{{ form.username.id_for_label }}" class="col-md-5 control-label" style="color: red;">
+                <span class="glyphicon glyphicon-user"></span>
+                Username
+            </label>
+            <div class="col-md-6 text-left">{{ form.username }}</div>
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.password.id_for_label }}" class="col-md-5 control-label" style="color: deepskyblue">
+                <span class="glyphicon glyphicon-floppy-open"></span>
+                Password
+            </label>
+            <div class="col-md-6 text-left">{{ form.password }}</div>
+        </div>
+
+        <input type="submit" value="Login" class="btn btn-primary btn-lg">
+
+    </form>
+</div>
+
+{% endblock %}

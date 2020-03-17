@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Home page{% endblock %}
+{% block content %}
+<div class="text-center">
+    <h1>Welcome ZX Blog</h1>
+    {% load staticfiles %}
+    <img src="{% static 'img/home.jpg' %}" width="1150px">
+</div>
+
+{% endblock %}
