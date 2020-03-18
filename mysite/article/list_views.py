@@ -7,8 +7,16 @@ from django.contrib.auth.models import User
 def article_titles(request,username=None):
     """文章列表"""
     if username:
+        """查看作者文章"""
         user = User.objects.get(username=username)
         articles_title = ArticlePost.objects.filter(author=user)
+        try:
+            # 模型类UserInfo与User建立了一对一的关系
+            # 通过User类的实例得到UserInfo类的信息，可以使用类似user。userinfo的模式
+            # user是User类的实例。而 userinfo就是Userinfo 规定使用小写
+            userinfo = user.userinfo
+        except:
+            userinfo = None
     else:
         articles_title = ArticlePost.objects.all()
     paginator = Paginator(articles_title,2)
@@ -22,6 +30,10 @@ def article_titles(request,username=None):
     except EmptyPage:
         current_page = paginator.page(paginator.num_pages)
         articles = current_page.object_list
+    if username:
+        return render(request,"article/list/author_articles.html",{
+            "articles":articles,"page":current_page,"userinfo":userinfo,"users":user
+        })
     return render(request,"article/list/article_titles.html",{
         "articles":articles,"page":current_page})
 
