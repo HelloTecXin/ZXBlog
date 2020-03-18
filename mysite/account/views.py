@@ -38,7 +38,6 @@ def register(request):
             new_user = user_form.save(commit=False)
             # ModelForm类和它的子类都具有save()方法，将表单数据保存到数据库，并且生成该对象
             # commit = False 数据并没有被保存到数据库，而仅生成了一个数据对象
-            print(user_form.cleaned_data['username'] + "=====" + user_form.cleaned_data['password'])
             new_user.set_password(user_form.cleaned_data['password'])
             new_user.save()
             new_profile = userprofile_form.save(commit=False)
