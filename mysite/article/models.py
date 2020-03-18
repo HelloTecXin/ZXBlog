@@ -25,10 +25,11 @@ class ArticlePost(models.Model):
     body = models.TextField()
     created = models.DateTimeField(default=timezone.now)
     update = models.DateTimeField(auto_now=True)
+    users_like = models.ManyToManyField(User,related_name="articles_like", blank=True)   # 用户点赞功能
 
     class Meta:
         ordering = ("-update",)         # 查询结果的排序
-        index_together = (('id','slug'),)
+        index_together = (('id', 'slug'),)
         # 对数据库中这两个字段建立索引，后面会通过每篇文章的id和slug获取该文章对象，
         # 建立索引能够提高读取文章对象的速度
 

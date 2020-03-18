@@ -2,6 +2,10 @@ from django.shortcuts import render,get_object_or_404
 from django.core.paginator import Paginator,PageNotAnInteger,EmptyPage
 from .models import ArticlePost,ArticleColumn
 from django.contrib.auth.models import User
+from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 
 
 def article_titles(request,username=None):
@@ -44,3 +48,28 @@ def article_detail(request,id,slug):
     return render(request,"article/list/article_content.html",{
         "article":article
     })
+
+
+@csrf_exempt
+@require_POST
+@login_required(login_url="/account/login/")
+def like_article(request):
+    """点赞功能
+    1、用于给article这个实例的属性user_like增加一个用户，
+    如果不同对象之间建立了一对多或者多对多的关联关系，那么就可以使用add（*objs，bulk=TRUE）
+    方法增加属性的值，从而建立起两个对象的关系"""
+    article_id = request.POST.get("id")
+    action = request.POST.get("action")
+    if article_id and action:
+        try:
+            article = ArticlePost.objects.get(id=article_id)
+            if action =="like":
+                # 1
+                article.users_like.add(request.user)
+                return HttpResponse("1")
+            else:
+                article.users_like.remove(request.user)
+                return HttpResponse("2")
+        except:
+            return HttpResponse("no")
+
