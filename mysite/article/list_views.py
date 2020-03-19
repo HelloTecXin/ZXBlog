@@ -6,6 +6,11 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
+import redis
+from django.conf import settings
+
+
+r = redis.StrictRedis(host=settings.REDIS_HOST,port=settings.REDIS_PORT,db=settings.REDIS_DB)
 
 
 def article_titles(request,username=None):
@@ -45,8 +50,11 @@ def article_titles(request,username=None):
 def article_detail(request,id,slug):
     """文章详情页面"""
     article = get_object_or_404(ArticlePost,id=id,slug=slug)
+    # 对访问文章的次数进行记录 incr函数的作用就是让当前的键值递增，并返回递增后的值
+    # redis对键的命名并没有强制的要求，比较好的做法就是 “对象类型：对象id：对象属性”
+    total_views = r.incr("article:{}:views".format(article.id))
     return render(request,"article/list/article_content.html",{
-        "article":article
+        "article":article,"total_views":total_views
     })
 
 

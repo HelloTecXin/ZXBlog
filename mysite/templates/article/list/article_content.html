@@ -13,7 +13,11 @@
            <!--当没有用户点赞或者超过一个用户点赞时，显示的是likes这种复数形式，如果只有一个用户点赞，
            则显示单数形式like | pluralize-->
        </span>
+       <span style="margin-left: 20px">
+           {{ total_views }}view{{ total_views | pluralize }}
+       </span>
        </p>
+
     </header>
     <link rel="stylesheet" href="{% static 'editor/css/editormd.preview.css' %}"/>
     <div id="editormd-view">
