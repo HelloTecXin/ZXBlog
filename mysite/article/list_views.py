@@ -53,8 +53,22 @@ def article_detail(request,id,slug):
     # 对访问文章的次数进行记录 incr函数的作用就是让当前的键值递增，并返回递增后的值
     # redis对键的命名并没有强制的要求，比较好的做法就是 “对象类型：对象id：对象属性”
     total_views = r.incr("article:{}:views".format(article.id))
+    # 1、redis连接对象方法zincrby(name,amount,value)，其作用是根据amount所设定的步长值增加有序集合（name
+    # ）中的value的数值。实现了article_ranking 中article.id 以步长为1自增，即文章被访问一次，article_ranking
+    # 就将该文章id的值增加1
+    r.zincrby('article_ranking',1,article.id)
+    # 2、通过上一步的结果，得到article_ranking中排序前10的对象
+    # zrange(name,start,end,desc=False,withscores=False,score_cast_func=float)
+    article_ranking = r.zrange('article_ranking',0,-1,desc=True)[:10]
+    article_ranking_ids = [int(id) for id in article_ranking]
+    # 条件查询，查出id在article_ranking_ids中的所有文章对象，并以文章对象为元素生成列表
+    most_viewed = list(ArticlePost.objects.filter(id__in=article_ranking_ids))
+    # index()函数用于从列表中找出某个值第一个匹配项的索引位置
+    # x表示匿名函数的输入，即列表中的一个元素，
+    most_viewed.sort(key=lambda x: article_ranking_ids.index(x.id))
+
     return render(request,"article/list/article_content.html",{
-        "article":article,"total_views":total_views
+        "article":article,"total_views":total_views,"most_viewed":most_viewed
     })
 
 
