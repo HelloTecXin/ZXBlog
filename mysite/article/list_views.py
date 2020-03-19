@@ -8,6 +8,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 import redis
 from django.conf import settings
+from .models import Comment
+from .forms import CommentForm
 
 
 r = redis.StrictRedis(host=settings.REDIS_HOST,port=settings.REDIS_PORT,db=settings.REDIS_DB)
@@ -66,9 +68,17 @@ def article_detail(request,id,slug):
     # index()函数用于从列表中找出某个值第一个匹配项的索引位置
     # x表示匿名函数的输入，即列表中的一个元素，
     most_viewed.sort(key=lambda x: article_ranking_ids.index(x.id))
+    if request.method == "POST":
+        comment_form = CommentForm(data=request.POST)
+        if comment_form.is_valid():
+            new_commnet = comment_form.save(commit=False)
+            new_commnet.article = article
+            new_commnet.save()
+    else:
+        comment_form = CommentForm()
 
     return render(request,"article/list/article_content.html",{
-        "article":article,"total_views":total_views,"most_viewed":most_viewed
+        "article":article,"total_views":total_views,"most_viewed":most_viewed,"comment_form":comment_form
     })
 
 
