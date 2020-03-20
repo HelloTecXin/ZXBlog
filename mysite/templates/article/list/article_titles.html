@@ -1,8 +1,10 @@
 {% extends "base.html" %}
+{% load article_tags %}
 {% block title %}articles{% endblock %}
 {% block content %}
 <div class="row text-center vertical-middle-sm">
     <h1>阅读塑造人生，技术改变世界！</h1>
+    <p>这里已经有{% total_articles %}篇文章供你阅读</p>
 </div>
 
 <div class="container">

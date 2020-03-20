@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load article_tags %}
 {% load staticfiles %}
 {% block title %}articles detail {% endblock %}
 {% block content %}
@@ -89,6 +90,9 @@
             </li>
             {% endfor %}
         </ol>
+        <hr>
+        <p class="text-center"><h3>最新文章</h3></p>
+        {% latest_articles 4 %}
     </div>
 </div>
 
