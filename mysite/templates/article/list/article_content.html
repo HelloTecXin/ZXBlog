@@ -23,9 +23,10 @@
     </header>
     <link rel="stylesheet" href="{% static 'editor/css/editormd.preview.css' %}"/>
     <div id="editormd-view">
-        <textarea id="append-test" style="display: none;">
-{{ article.body }}
-        </textarea>
+        <!--<textarea id="append-test" style="display: none;">-->
+<!--{{ article.body }}-->
+        <!--</textarea>-->
+        {{ article.body | markdown }}
     </div>
     <div>
         <p class="text-center">
@@ -93,6 +94,18 @@
         <hr>
         <p class="text-center"><h3>最新文章</h3></p>
         {% latest_articles 4 %}
+        <hr>
+        <p class="text-center"><h3>最多评论的文章</h3></p>
+        <ul>
+            <!--把自定义标签所得到的对象赋值给一个变量-->
+            {% most_commented_articles as most_comments %}
+            {% for comment_article in  most_comments %}
+            <li>
+                <a href="{{ comment_article.get_url_path }}">{{ comment_article.title }}</a>
+
+            </li>
+            {% endfor %}
+        </ul>
     </div>
 </div>
 
