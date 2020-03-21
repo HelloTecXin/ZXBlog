@@ -6,6 +6,15 @@ from django.urls import reverse
 from slugify import slugify
 
 
+class ArticleTag(models.Model):
+    """标签"""
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="tag")
+    tag = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.tag
+
+
 class ArticleColumn(models.Model):
     """栏目"""
     user = models.ForeignKey(User,on_delete=models.CASCADE,related_name='article_column')
@@ -26,6 +35,7 @@ class ArticlePost(models.Model):
     created = models.DateTimeField(default=timezone.now)
     update = models.DateTimeField(auto_now=True)
     users_like = models.ManyToManyField(User,related_name="articles_like", blank=True)   # 用户点赞功能
+    article_tag = models.ManyToManyField(ArticleTag, related_name='article_tag',blank=True)
 
     class Meta:
         ordering = ("-update",)         # 查询结果的排序
@@ -61,3 +71,5 @@ class Comment(models.Model):
 
     def __str__(self):
         return "Comment by{0}on{1}".format(self.commentator.username,self.article)
+
+
