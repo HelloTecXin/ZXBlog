@@ -10,6 +10,7 @@ import redis
 from django.conf import settings
 from .models import Comment
 from .forms import CommentForm
+from django.db.models import Count
 
 
 r = redis.StrictRedis(host=settings.REDIS_HOST,port=settings.REDIS_PORT,db=settings.REDIS_DB)
@@ -76,9 +77,12 @@ def article_detail(request,id,slug):
             new_commnet.save()
     else:
         comment_form = CommentForm()
-
-    return render(request,"article/list/article_content.html",{
-        "article":article,"total_views":total_views,"most_viewed":most_viewed,"comment_form":comment_form
+    article_tags_ids = article.article_tag.values_list("id",flat=True)
+    similar_articles = ArticlePost.objects.filter(article_tag__in=article_tags_ids).exclude(id=article.id)
+    similar_articles = similar_articles.annotate(same_tags=Count("article_tag")).order_by('-same_tags','-created')[:4]
+    return render(request, "article/list/article_content.html", {
+        "article": article, "total_views":total_views, "most_viewed": most_viewed, "comment_form":comment_form,
+        "similar_articles": similar_articles
     })
 
 

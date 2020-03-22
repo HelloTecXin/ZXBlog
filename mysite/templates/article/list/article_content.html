@@ -108,6 +108,13 @@
             </li>
             {% endfor %}
         </ul>
+        <hr>
+        <p class="text-center"><h3>推荐相似文章</h3></p>
+        {% for similar in similar_articles %}
+        <p><a href="{{ similar.get_url_path }}">{{ similar.title }}</a> </p>
+        {% empty%}
+        <p>Sorry,没有相似文章</p>
+        {% endfor %}
     </div>
 </div>
 
