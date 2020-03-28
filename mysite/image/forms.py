@@ -14,7 +14,7 @@ class ImageForm(forms.ModelForm):
     def clean_url(self):
         url = self.cleaned_data['url']
         valid_extensions = ['jpg','jpeg','png'] # 规定图片的扩展名
-        extension = url.rsplit(',',1).lower()  # 从得到图片的网址中分解出其扩展名
+        extension = url.rsplit('.',1)[1].lower()  # 从得到图片的网址中分解出其扩展名
         if extension not in valid_extensions:   # 如果属于规定的扩展名，就认为提交的URL对象是一个图片
             raise forms.ValidationError('The given url does not match valid image extension.')
         return url
