@@ -6,6 +6,9 @@ from django.contrib.auth.models import User
 import json
 from django.http import HttpResponse
 from braces.views import LoginRequiredMixin
+from django.views.generic.edit import CreateView
+from django.shortcuts import redirect
+from .forms import CreateCourseForm
 
 
 class AboutView(TemplateView):
@@ -47,3 +50,17 @@ def foo_view(request):
     data = {"name":'alaoshi','web':'django'}
     return HttpResponse(json.dumps(data),content_type='application/json')
 
+
+class CreateCourseView(UserCourseMixin,CreateView):
+    """当用户以GET方式请求时，即在页面中显示表单，CreateView就是完成这个作用的类，只要继承它，就不需要写get()方法了"""
+    fields = ['title','overview']   # 声明在表单中显示的字段
+    template_name = 'course/manage/create_course.html'
+
+    def post(self, request, *args, **kwargs):   # 专门处理以POST方式提交的表单内容
+        form = CreateCourseForm(data=request.POST)
+        if form.is_valid():
+            new_course = form.save(commit=False)
+            new_course.user = self.request.user
+            new_course.save()
+            return redirect("course:manage_course") # 当表单内容被保存后，将页面转向指定位置
+        return self.render_to_response({"form":form})   # 当表单数据检测不通过是没让用户重新填写
