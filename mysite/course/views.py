@@ -5,6 +5,7 @@ from .models import Course
 from django.contrib.auth.models import User
 import json
 from django.http import HttpResponse
+from braces.views import LoginRequiredMixin
 
 
 class AboutView(TemplateView):
@@ -18,9 +19,9 @@ class CourseListView(ListView):
     template_name = 'course/course_list.html'
 
     # 不重写queryset则 model=Course 得到所有记录不筛选
-    def get_queryset(self):
-        qs = super(CourseListView, self).get_queryset() # 调用了父类的get_queryset()方法，
-        return qs.filter(user = User.objects.get(username="张鑫"))   # 根据得到的对象依据条件进行筛选
+    # def get_queryset(self):
+    #     qs = super(CourseListView, self).get_queryset() # 调用了父类的get_queryset()方法，
+    #     return qs.filter(user = User.objects.get(username="张鑫"))   # 根据得到的对象依据条件进行筛选
 
 
 class UserMixin:    # 这个类将被用于后面的类中，而不是作为视图使用
@@ -29,8 +30,9 @@ class UserMixin:    # 这个类将被用于后面的类中，而不是作为视�
         return qs.filter(user=self.request.user)
 
 
-class UserCourseMixin(UserMixin):  # 还是一个Mixin，但它继承了UserMixin， 上面定义的方法也被带入到当前类中
-    module = Course
+class UserCourseMixin(UserMixin,LoginRequiredMixin):  # 还是一个Mixin，但它继承了UserMixin， 上面定义的方法也被带入到当前类中
+    model = Course
+    login_url = "/account/login/"
 
 
 class ManageCourseListView(UserCourseMixin,ListView): # 继承顺序，一般Mixin类放在左边，其他类放在右边
