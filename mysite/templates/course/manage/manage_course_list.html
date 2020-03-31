@@ -21,7 +21,7 @@
             <td>{{ course.created|date:"Y-m-d" }}</td>
             <td>
                 <a name="edit" href="#"><span class="glyphicon glyphicon-pencil"></span></a>
-                <a name="delete" href="{% url 'course:delete_course' course.id %}"><span class="glyphicon glyphicon-trash" style="margin-left: 20px"></span></a>
+                <a class="delete" name="delete" href="{% url 'course:delete_course' course.id %}"><span class="glyphicon glyphicon-trash" style="margin-left: 20px"></span></a>
             </td>
         </tr>
         {% endfor %}
@@ -44,6 +44,7 @@
         }
         return cookieValue;
     }
+
     $(document).ready(function () {
         var csrftoken = getCookie('csrftoken');
         function csrfSafeMethod(method) {
@@ -51,8 +52,8 @@
         }
         $.ajaxSetup({
             crossDomain:false, //obviates need for sameOrigin test
-            beforeSend:function (xhr,setting) {
-                if(!csrfSafeMethod(setting.type)){
+            beforeSend:function (xhr,settings) {
+                if(!csrfSafeMethod(settings.type)){
                     xhr.setRequestHeader("X-CSRFToken",csrftoken);
                 }
             }
@@ -68,7 +69,7 @@
             }).fail(function () {
                 alert('error');
             });
-            return false
+            return false;
         };
         $(".delete").click(onDelete);
     })

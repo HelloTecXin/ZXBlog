@@ -70,9 +70,10 @@ class CreateCourseView(UserCourseMixin, CreateView):
 class DeleteCourseView(UserCourseMixin, DeleteView):
     # template_name = 'course/manage/delete_course_confirm.html'
     success_url = reverse_lazy("course:manage_course")
+    # template_name = 'course/course_list.html'
 
-    def dispatch(self,request, *args, **kwargs):
-        resp = super(DeleteCourseView, self).dispatch(request,*args, **kwargs)
+    def dispatch(self, *args, **kwargs):
+        resp = super(DeleteCourseView, self).dispatch(*args, **kwargs)
         if self.request.is_ajax():
             response_data = {"result": "ok"}
             return HttpResponse(json.dumps(response_data), content_type="application/json")
