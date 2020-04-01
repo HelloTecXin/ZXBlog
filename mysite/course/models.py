@@ -11,6 +11,7 @@ class Course(models.Model):
     slug = models.SlugField(max_length=200,unique=True)
     overview = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
+    student = models.ManyToManyField(User, related_name="courses_joined", blank=True)
 
     class Meta:
         ordering =('-created',)
@@ -37,10 +38,10 @@ class Lesson(models.Model):
     attach = models.FileField(blank=True,upload_to=user_directory_path) # 附件
     created = models.DateTimeField(auto_now_add=True)
     order = OrderField(blank=True,for_fields=['course'])
-    student = models.ManyToManyField(User,related_name="courses_joined",blank=True)
+
 
     class Meta:
-        ordering =['order']
+        ordering = ['order']
 
     def __str__(self):
         return '{}.{}'.format(self.order,self.title)

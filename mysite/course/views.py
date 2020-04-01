@@ -136,3 +136,17 @@ class DetailLessonView(LoginRequiredMixin,TemplateResponseMixin,View):
     def get(self,reuqest,lesson_id):
         lesson = get_object_or_404(Lesson,id=lesson_id)
         return self.render_to_response({"lesson":lesson})
+
+
+class LessonDetailView(DetailLessonView):
+    template_name = "course/lesson_detail.html"
+
+
+class StudentListLessonView(ListLessonsView):
+    """继承上面已经创建的类ListLessonsView类，因为显示的模板文件不同，所以重写模板"""
+    template_name = "course/slist_lessons.html"
+
+    def post(self,reqeust,*args,**kwargs):
+        course = Course.objects.get(id=kwargs['course_id'])
+        course.student.add(self.request.user)
+        return HttpResponse("ok")
