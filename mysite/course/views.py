@@ -11,6 +11,8 @@ from django.shortcuts import redirect
 from .forms import CreateCourseForm,CreateLessonForm
 from django.urls import reverse_lazy
 from django.views import View  # 所有基于类的视图的基类
+from django.shortcuts import get_object_or_404
+from django.views.generic.base import TemplateResponseMixin # 提供了一种模板渲染的机制，在子类中，可以指定模板文件和渲染数据
 
 
 class AboutView(TemplateView):
@@ -115,3 +117,22 @@ class CreateLessonView(LoginRequiredMixin,View):
             new_lesson.user = self.request.user
             new_lesson.save()
             return redirect("course:manage_course")
+
+
+class ListLessonsView(LoginRequiredMixin, TemplateResponseMixin, View):
+    login_url = "/account/login/"
+    template_name = 'course/manage/list_lessons.html'  # 定义模板文件
+
+    def get(self,request,course_id):    # 响应前端get请求的方法，因为要识别课程标题，所以传入了course_id
+        course = get_object_or_404(Course,id=course_id) # 根据course_id 得到当前的课程标题对象
+        return self.render_to_response({'course':course})
+        # 将该数据渲染到模板中，render_to_response()就是TemplateResponseMixin类的方法
+
+
+class DetailLessonView(LoginRequiredMixin,TemplateResponseMixin,View):
+    login_url = "/account/login/"
+    template_name = "course/manage/detail_lesson.html"
+
+    def get(self,reuqest,lesson_id):
+        lesson = get_object_or_404(Lesson,id=lesson_id)
+        return self.render_to_response({"lesson":lesson})

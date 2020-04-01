@@ -37,6 +37,7 @@ class Lesson(models.Model):
     attach = models.FileField(blank=True,upload_to=user_directory_path) # 附件
     created = models.DateTimeField(auto_now_add=True)
     order = OrderField(blank=True,for_fields=['course'])
+    student = models.ManyToManyField(User,related_name="courses_joined",blank=True)
 
     class Meta:
         ordering =['order']
